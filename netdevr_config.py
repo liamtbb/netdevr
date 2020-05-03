@@ -29,11 +29,4 @@ def hostlist_grab():
     hostlist_dict["hostlist_misc"] = ['cgy-arr-dis-1a.ahsv.net', 'van-wf375-ge2ipay1.ahsv.net', 'van-wg401-ge2-1a.ahsv.net',
                      'sea-infocube-vmx.ahsv.net', 'sea-infocube-sw1.ahsv.net', 'sea-bluespan-vmx.ahsv.net']
 
-#    hostlist_active = [[hostlist_dv1], [hostlist_fr802], [hostlist_hc6b], [hostlist_hc21n], [hostlist_la], [hostlist_mia], [hostlist_misc], [hostlist_wb701], [hostlist_wb912], [hostlist_sea_cores], [hostlist_tor_cores], [hostlist_van_cores], [hostlist_wf375]]
-#    hostlist_active = [hostlist_dv1, hostlist_fr802, hostlist_hc6b, hostlist_hc21n, hostlist_la, hostlist_mia,
-#                       hostlist_misc, hostlist_wb701, hostlist_wb912, hostlist_sea_cores, hostlist_tor_cores,
-#                       hostlist_van_cores, hostlist_wf375]
-
-    print(hostlist_dict)
-
     return hostlist_dict

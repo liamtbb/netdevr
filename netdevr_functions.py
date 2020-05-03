@@ -1,39 +1,40 @@
-#def host_compile(hostlist_undict, hostlist_dv1, hostlist_fr802, hostlist_hc6b, hostlist_hc21n, hostlist_la, hostlist_mia, hostlist_misc, hostlist_wb701, hostlist_wb912, hostlist_sea_cores, hostlist_tor_cores, hostlist_van_cores, hostlist_wf375):
 def host_compile(hostlist_undict, hostlist_active):
 
     hostlist_complete = []
 
     for host in hostlist_active:
-        if any(s in hostlist_undict for s in (str(host), 'hostlist_complete')):
+        if any(s in hostlist_undict for s in (str(host), 'ALL HOSTS')):
             hostlist_complete = hostlist_complete + list(hostlist_active[str(host)])
 
-    # if any(s in hostlist_undict for s in ('hostlist_dv1', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_dv1
-    # if any(s in hostlist_undict for s in ('hostlist_hc21n', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_hc21n
-    # if any(s in hostlist_undict for s in ('hostlist_hc6b', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_hc6b
-    # if any(s in hostlist_undict for s in ('hostlist_wf375', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_wf375
-    # if any(s in hostlist_undict for s in ('hostlist_wb701', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_wb701
-    # if any(s in hostlist_undict for s in ('hostlist_wb912', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_wb912
-    # if any(s in hostlist_undict for s in ('hostlist_fr802', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_fr802
-    # if any(s in hostlist_undict for s in ('hostlist_mia', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_mia
-    # if any(s in hostlist_undict for s in ('hostlist_la', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_la
-    # if any(s in hostlist_undict for s in ('hostlist_van_cores', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_van_cores
-    # if any(s in hostlist_undict for s in ('hostlist_sea_cores', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_sea_cores
-    # if any(s in hostlist_undict for s in ('hostlist_tor_cores', 'hostlist_complete')):
-    #     hostlist_complete = hostlist_complete + hostlist_tor_cores
-    # if any(s in hostlist_undict for s in ('hostlist_misc', 'hostlist_complete')):
-    #    hostlist_complete = hostlist_complete + hostlist_misc
-
-    print(hostlist_complete)
-
     return hostlist_complete
+
+
+def host_separator(hostlist_active):
+
+    separator_autopop = ""
+
+    for host in hostlist_active:
+        print(host)
+        separator_autopop = separator_autopop + ",\n\t\t\t{\n\t\t\t'name': '" + host + "'\n\t\t\t}"
+
+    separator_autopop = separator_autopop + ",\n\t\t\t{\n\t\t\t'name': '" + "ALL HOSTS" + "'\n\t\t\t}"
+
+    separator_provision_head = '''
+hostlist_select = [
+    {
+        'type': 'checkbox',
+        'name': 'hostlist_options',
+        'message': "Select 1 or more hostlists with [space], continue with [enter]",
+        'choices': [
+            Separator('= Vancouver =')'''
+
+    separator_provision_tail = '''
+        ],
+        'validate': lambda answer: 'You must choose at least one hostlist.' \\
+                if len(answer) == 0 else True
+    }
+]'''
+
+    separator_provision = separator_provision_head + separator_autopop + separator_provision_tail
+
+    return(separator_provision)
