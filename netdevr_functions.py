@@ -4,7 +4,11 @@ def host_compile(hostlist_undict, hostlist_active):
 
     for host in hostlist_active:
         if any(s in hostlist_undict for s in (str(host), 'ALL HOSTS')):
-            hostlist_complete = hostlist_complete + list(hostlist_active[str(host)])
+            key_list = list(hostlist_active[str(host)])
+            hostlist_complete = hostlist_complete + key_list
+
+    # print(hostlist_complete)
+    # exit()
 
     return hostlist_complete
 

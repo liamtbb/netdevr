@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.7
 from netdevr_functions import host_compile, host_separator
-from netdevr_config import hostlist_grab
+from netdevr_config import hostlist_conf, command_conf
 from datetime import date, timedelta
 from keyring import get_password
 from progress.bar import ShadyBar
@@ -84,6 +84,8 @@ else:
 username = input("Enter username: ")
 password = getpass.getpass(prompt="Enter password: ", stream=None)
 
+
+# command input
 command = input("Enter command or type 'list' for preset options, or 'edit' to make config change: ")
 if command == "list":
         command_options = [
@@ -91,24 +93,25 @@ if command == "list":
                         'type': 'list',
                         'name': 'command_options',
                         'message': 'Select a command with [enter]',
-                        'choices': ['show interfaces descriptions', 'show interfaces terse', 'show bgp summary', 'show spanning-tree interface'],
+                        'choices': command_conf(),
                 },
         ]
 
         command_dict = prompt(command_options)
         command = command_dict.get("command_options")
+        edit_mode = False
 
         logger.info("Command has been set as: " + command)
-
 elif command == "edit":
         edit_mode = True
         command = input("Enter edit command: ")
 
         logger.info("Edit command has been set as: " + command)
-
+else:
+        edit_mode = False
 
 # hostlist compiling and dynamic list creation
-hostlist_active = hostlist_grab()
+hostlist_active = hostlist_conf()
 
 separator_autopop = host_separator(hostlist_active)
 
@@ -132,15 +135,41 @@ if args.silence:
 
 for host in hostlist_complete:
 
-        junos1 = {
-                "device_type": "juniper_junos",
+        # for key in hostlist_active:
+        #         if host in hostlist_active[key]:
+        #                 device_type = "juniper_junos"
+
+        if host == 'juniper':
+                device_type = "juniper_junos"
+                print("The device type has been set to: " + device_type)
+                continue
+        if host == 'cisco':
+                device_type = "cisco_ios"
+                print("The device type has been set to: " + device_type)
+                continue
+        if host == 'linux':
+                device_type = "linux"
+                print("The device type has been set to: " + device_type)
+                continue
+
+        device = {
+                "device_type": "autodetect",
                 "host": host,
                 "username": username,
                 "password": password,
                 "global_delay_factor": 2,
         }
 
-        net_connect = netmiko.Netmiko(**junos1)
+        # guesser = netmiko.SSHDetect(**device)
+        # best_match = guesser.autodetect()
+        # print(best_match)  # Name of the best device_type to use further
+        # print(guesser.potential_matches)  # Dictionary of the whole matching result
+        # exit()
+        #
+        # device["device_type"] = best_match
+        device["device_type"] = device_type
+
+        net_connect = netmiko.Netmiko(**device)
         if edit_mode is False:
                 output = net_connect.send_command(command)
         elif edit_mode is True:

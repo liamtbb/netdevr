@@ -1,5 +1,5 @@
 # Configure hostlists:
-def hostlist_grab():
+def hostlist_conf():
 
     hostlist_dict = {}
 
@@ -27,10 +27,17 @@ def hostlist_grab():
     # hostlist_dict["sea-cor"] = ['sea-pav-cor-1.ahsv.net', 'sea-pav-cor-2.ahsv.net', 'sea-prm-ed3-1.ahsv.net',
     #                       'sea-val-ed3-1.ahsv.net']
     # hostlist_dict["tor-cor"] = ['tor-pav-cor-1.ahsv.net', 'tor-pav-cor-2.ahsv.net', 'tor-val-vmx-2.ahsv.net']
-    # hostlist_dict["misc"] = ['cgy-arr-dis-1a.ahsv.net', 'van-wf375-ge2ipay1.ahsv.net', 'van-wg401-ge2-1a.ahsv.net',
-    #                  'sea-infocube-vmx.ahsv.net', 'sea-infocube-sw1.ahsv.net', 'sea-bluespan-vmx.ahsv.net']
-    hostlist_dict["hostlist_dynamic_test"] = ['van-test-dis-1a.ahsv.net']
+    hostlist_dict["misc"] = ['juniper', 'cgy-arr-dis-1a.ahsv.net', 'van-wf375-ge2ipay1.ahsv.net', 'van-wg401-ge2-1a.ahsv.net',
+                     'sea-infocube-vmx.ahsv.net', 'sea-infocube-sw1.ahsv.net', 'sea-bluespan-vmx.ahsv.net']
+    hostlist_dict["hostlist_dynamic_test"] = ['juniper', 'van-test-dis-1a.ahsv.net', 'linux', 'van-dv1-mon-1.ahsv.net']
 
     return hostlist_dict
 
+
 # Configure common commands:
+def command_conf():
+
+    commands = ['show interfaces descriptions', 'show interfaces terse', 'show bgp summary', 'show spanning-tree interface',
+                'show arp no-resolve', 'show config', 'show system uptime']
+
+    return commands
