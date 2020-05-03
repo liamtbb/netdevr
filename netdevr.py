@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.7
+from netmiko.ssh_exception import NetMikoTimeoutException, NetmikoAuthenticationException
 from netdevr_functions import host_compile, host_separator
 from netdevr_config import hostlist_conf, command_conf
 from datetime import date, timedelta
@@ -197,8 +198,18 @@ for host in hostlist_complete:
         #
         # device["device_type"] = best_match
         device["device_type"] = device_type
+        try:
+                net_connect = netmiko.Netmiko(**device)
+        except (NetMikoTimeoutException):
+                print("\n-------=====================-------\n")
+                print ("Timed out while attempting connection to " + host + ", moving to next host...")
+                logger.warning("Timed out connecting to " + host + ".")
+        except (NetmikoAuthenticationException):
+                print("\n-------=====================-------\n")
+                print("Failed to authenticate, please check username/password and try again.")
+                logger.warning("Failed to authenticate, incorrect login credentials.")
+                exit()
 
-        net_connect = netmiko.Netmiko(**device)
         if edit_mode is False:
                 output = net_connect.send_command(command)
         elif edit_mode is True:
@@ -208,9 +219,7 @@ for host in hostlist_complete:
         if args.silence:
                 bar.next()
         else:
-                print()
-                print("-------=====================-------")
-                print()
+                print("\n-------=====================-------\n")
 
                 print(net_connect.find_prompt())
                 print("> " + command)
