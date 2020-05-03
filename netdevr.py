@@ -69,6 +69,7 @@ parser.add_argument("-c", "--command", help = "sets command", action="store", de
 parser.add_argument("-e", "--edit", help = "sets edit mode, use at own risk", action="store_true")
 parser.add_argument("-d", "--destination", help = "sets destination hostlist(s), separate multiple lists with ',' e.g. <list1>,<list2>", action="store", dest="destination_inline")
 parser.add_argument("-l", "--list", help = "list all available destination hostlists", action="store_true")
+parser.add_argument("-a", "--autodetect", help = "autodetects device type of specified host", action="store", dest="autodetect")
 
 args = parser.parse_args()
 
@@ -152,6 +153,42 @@ if args.password_inline is not None:
         password = args.password_inline
 else:
         password = getpass.getpass(prompt="Enter password: ", stream=None)
+
+
+# autodetector
+if args.autodetect:
+        host = args.autodetect
+        print("Autodetecting device type for host " + host + "...\n")
+        device = {
+                "device_type": "autodetect",
+                "host": host,
+                "username": username,
+                "password": password,
+                "global_delay_factor": 2,
+                }
+
+        try:
+                guesser = netmiko.SSHDetect(**device)
+        except (NetMikoTimeoutException):
+                print("Timed out while attempting connection to " + host + ".")
+                logger.warning("Timed out connecting to " + host + ".")
+                exit()
+        except (NetmikoAuthenticationException):
+                print("Failed to authenticate, please check username/password and try again.")
+                logger.warning("Failed to authenticate, incorrect login credentials.")
+                exit()
+
+        guesser = netmiko.SSHDetect(**device)
+        best_match = guesser.autodetect()
+        guesses = guesser.potential_matches
+        if best_match is not None:
+                print("Best match: " + best_match + "\nAll potential matches: ", end='')  # Name of the best device_type to use further
+                for match in guesses:
+                                print(match + " ")  # Dictionary of the whole matching result
+        else:
+                print("Failed to autodetect device type for host.")
+
+        exit()
 
 
 # command input
