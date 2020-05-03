@@ -13,8 +13,20 @@ parser = argparse.ArgumentParser(description = "Options for network_config")
 parser.add_argument("-v", "--verbose", help = "enables verbose output", action="store_true")
 parser.add_argument("-o", "--output", help = "writes output to file", action="store", dest="output")
 parser.add_argument("-s", "--silence", help = "silences console output", action="store_true")
+parser.add_argument("-u", "--username", help = "sets username", action="store", dest="username_inline")
+parser.add_argument("-p", "--password", help = "sets password", action="store", dest="password_inline")
+parser.add_argument("-c", "--command", help = "sets command", action="store", dest="command_inline")
+parser.add_argument("-e", "--edit", help = "sets edit mode, use at own risk", action="store_true")
+parser.add_argument("-d", "--destination", help = "sets destination hostlist(s), separate multiple lists with ', ' e.g. <list1>, <list2>", action="store", dest="hosts_inline")
+parser.add_argument("-l", "--list", help = "list all available destination hostlists", action="store_true")
 
 args = parser.parse_args()
+
+if args.list:
+        print("Configured hostlists:\n")
+        for key in hostlist_conf():
+                print(key + ":\n" + str(hostlist_conf()[key]) + "\n")
+        exit("\n")
 
 
 # directory management
@@ -81,34 +93,49 @@ else:
 
 
 # credentials acquisition
-username = input("Enter username: ")
-password = getpass.getpass(prompt="Enter password: ", stream=None)
+if args.username:
+        username = args.username_inline
+else:
+        username = input("Enter username: ")
+
+if args.password:
+        password = args.password_inline
+else:
+        password = getpass.getpass(prompt="Enter password: ", stream=None)
 
 
 # command input
-command = input("Enter command or type 'list' for preset options, or 'edit' to make config change: ")
-if command == "list":
-        command_options = [
-                {
-                        'type': 'list',
-                        'name': 'command_options',
-                        'message': 'Select a command with [enter]',
-                        'choices': command_conf(),
-                },
-        ]
-
-        command_dict = prompt(command_options)
-        command = command_dict.get("command_options")
-        edit_mode = False
-
-        logger.info("Command has been set as: " + command)
-elif command == "edit":
-        edit_mode = True
-        command = input("Enter edit command: ")
-
-        logger.info("Edit command has been set as: " + command)
+if args.command:
+        command = args.command_inline
+        if args.edit:
+                edit_mode = True
+        elif args.edit == False:
+                edit_mode = False
 else:
-        edit_mode = False
+        command = input("Enter command or type 'list' for preset options, or 'edit' to make config change: ")
+
+        if command == "list":
+                command_options = [
+                        {
+                                'type': 'list',
+                                'name': 'command_options',
+                                'message': 'Select a command with [enter]',
+                                'choices': command_conf(),
+                        },
+                ]
+
+                command_dict = prompt(command_options)
+                command = command_dict.get("command_options")
+                edit_mode = False
+
+                logger.info("Command has been set as: " + command)
+        elif command == "edit":
+                edit_mode = True
+                command = input("Enter edit command: ")
+
+                logger.info("Edit command has been set as: " + command)
+        else:
+                edit_mode = False
 
 # hostlist compiling and dynamic list creation
 hostlist_active = hostlist_conf()
