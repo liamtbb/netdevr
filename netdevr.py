@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.7
 from netmiko.ssh_exception import NetMikoTimeoutException, NetmikoAuthenticationException
-from netdevr_functions import host_compile, host_separator
-# from netdevr_config import hostlist_conf, command_conf
+# from netdevr_functions import host_compile, host_separator
+from netdevr_config import hostlist_conf, command_conf
 from datetime import date, timedelta
 from keyring import get_password
 from progress.bar import ShadyBar
