@@ -84,10 +84,8 @@ else:
 username = input("Enter username: ")
 password = getpass.getpass(prompt="Enter password: ", stream=None)
 
-command = input("Enter command or type 'list' for preset options: ")
+command = input("Enter command or type 'list' for preset options, or 'edit' to make config change: ")
 if command == "list":
-        print("list = true")
-
         command_options = [
                 {
                         'type': 'list',
@@ -100,7 +98,13 @@ if command == "list":
         command_dict = prompt(command_options)
         command = command_dict.get("command_options")
 
-logger.info("Command has been set as: " + command)
+        logger.info("Command has been set as: " + command)
+
+elif command == "edit":
+        edit_mode = True
+        command = input("Enter edit command: ")
+
+        logger.info("Edit command has been set as: " + command)
 
 
 # hostlist compiling and dynamic list creation
@@ -137,7 +141,11 @@ for host in hostlist_complete:
         }
 
         net_connect = netmiko.Netmiko(**junos1)
-        output = net_connect.send_command(command)
+        if edit_mode is False:
+                output = net_connect.send_command(command)
+        elif edit_mode is True:
+                output = net_connect.send_config_set(command)
+                output = net_connect.send_config_set("commit and-quit")
 
         if args.silence:
                 bar.next()

@@ -14,7 +14,6 @@ def host_separator(hostlist_active):
     separator_autopop = ""
 
     for host in hostlist_active:
-        print(host)
         separator_autopop = separator_autopop + ",\n\t\t\t{\n\t\t\t'name': '" + host + "'\n\t\t\t}"
 
     separator_autopop = separator_autopop + ",\n\t\t\t{\n\t\t\t'name': '" + "ALL HOSTS" + "'\n\t\t\t}"
