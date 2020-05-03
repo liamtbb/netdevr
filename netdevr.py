@@ -17,7 +17,7 @@ parser.add_argument("-u", "--username", help = "sets username", action="store", 
 parser.add_argument("-p", "--password", help = "sets password", action="store", dest="password_inline")
 parser.add_argument("-c", "--command", help = "sets command", action="store", dest="command_inline")
 parser.add_argument("-e", "--edit", help = "sets edit mode, use at own risk", action="store_true")
-parser.add_argument("-d", "--destination", help = "sets destination hostlist(s), separate multiple lists with ', ' e.g. <list1>, <list2>", action="store", dest="hosts_inline")
+parser.add_argument("-d", "--destination", help = "sets destination hostlist(s), separate multiple lists with ',' e.g. <list1>,<list2>", action="store", dest="destination_inline")
 parser.add_argument("-l", "--list", help = "list all available destination hostlists", action="store_true")
 
 args = parser.parse_args()
@@ -93,19 +93,19 @@ else:
 
 
 # credentials acquisition
-if args.username:
+if args.username_inline is not None:
         username = args.username_inline
 else:
         username = input("Enter username: ")
 
-if args.password:
+if args.password_inline is not None:
         password = args.password_inline
 else:
         password = getpass.getpass(prompt="Enter password: ", stream=None)
 
 
 # command input
-if args.command:
+if args.command_inline is not None:
         command = args.command_inline
         if args.edit:
                 edit_mode = True
@@ -140,13 +140,15 @@ else:
 # hostlist compiling and dynamic list creation
 hostlist_active = hostlist_conf()
 
-separator_autopop = host_separator(hostlist_active)
+if args.destination_inline is None:
+        separator_autopop = host_separator(hostlist_active)
 
-exec(separator_autopop)
+        exec(separator_autopop)
 
-hostlist_selected = prompt(hostlist_select)
-hostlist_undict = hostlist_selected["hostlist_options"]
-hostlist_len = len(hostlist_selected["hostlist_options"])
+        hostlist_selected = prompt(hostlist_select)
+        hostlist_undict = hostlist_selected["hostlist_options"]
+else:
+        hostlist_undict = list(args.destination_inline.split(","))
 
 hostlist_complete = host_compile(hostlist_undict, hostlist_active)
 
