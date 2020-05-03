@@ -8,9 +8,7 @@ from PyInquirer import prompt, Separator
 import os, logging, sys, time, argparse, ast, netmiko, getpass
 
 
-############
-##ARGPARSE##
-############
+# argument parsing
 parser = argparse.ArgumentParser(description = "Options for network_config")
 parser.add_argument("-v", "--verbose", help = "enables verbose output", action="store_true")
 parser.add_argument("-o", "--output", help = "writes output to file", action="store", dest="output")
@@ -19,9 +17,7 @@ parser.add_argument("-s", "--silence", help = "silences console output", action=
 args = parser.parse_args()
 
 
-########################
-##DIRECTORY MANAGEMENT##
-########################
+# directory management
 date = str(date.today())
 #last_date = date.today() - timedelta(days=1)
 #root_dir = "/usr/home/astutebackups/backups/network_backups/"
@@ -46,9 +42,7 @@ elif args.output is not None:
         filename = args.output
 
 
-#####################
-##CONFIGURE LOGGING##
-#####################
+# logging setup
 # create logger with 'network_backups'
 logger = logging.getLogger('network_backups')
 logger.setLevel(logging.DEBUG)
@@ -86,9 +80,7 @@ else:
 #logger.info("Log file(s) can be found at " + log_dir)
 
 
-#########################
-##CONFIGURE CREDENTIALS##
-#########################
+# credentials acquisition
 username = input("Enter username: ")
 password = getpass.getpass(prompt="Enter password: ", stream=None)
 
@@ -111,78 +103,12 @@ if command == "list":
 logger.info("Command has been set as: " + command)
 
 
-####################
-##CREATE HOSTLISTS##
-####################
-
+# hostlist compiling and dynamic list creation
 hostlist_active = hostlist_grab()
-
-logger.info(hostlist_active)
 
 separator_autopop = host_separator(hostlist_active)
 
 exec(separator_autopop)
-
-# hostlist_select = [
-#     {
-#         'type': 'checkbox',
-#         'name': 'hostlist_options',
-#         'message': "Select 1 or more hostlists with [space], continue with [enter]",
-#         'choices': [
-#                 Separator('= Vancouver ='),
-#                 {
-#                 'name': 'hostlist_dv1'
-#                 },
-#                 {
-#                 'name': 'hostlist_hc21n'
-#                 },
-#                 {
-#                 'name': 'hostlist_hc6b',
-#                 },
-#                 {
-#                 'name': 'hostlist_wf375'
-#                 },
-#                 {
-#                 'name': 'hostlist_van_cores'
-#                 },
-#                 Separator('= Seattle ='),
-#                 {
-#                 'name': 'hostlist_wb701'
-#                 },
-#                 {
-#                 'name': 'hostlist_wb912'
-#                 },
-#                 {
-#                 'name': 'hostlist_sea_cores'
-#                 },
-#                 Separator('= Toronto ='),
-#                 {
-#                 'name': 'hostlist_fr802'
-#                 },
-#                 {
-#                 'name': 'hostlist_tor_cores'
-#                 },
-#                 Separator('= Miami ='),
-#                 {
-#                 'name': 'hostlist_mia'
-#                 },
-#                 Separator('= Los Angeles ='),
-#                 {
-#                 'name': 'hostlist_la'
-#                 },
-#                 Separator('= Customer & Misc ='),
-#                 {
-#                 'name': 'hostlist_misc'
-#                 },
-#                 Separator('= APPLY ALL ='),
-#                 {
-#                 'name': 'hostlist_complete'
-#                 }
-#         ],
-#         'validate': lambda answer: 'You must choose at least one hostlist.' \
-#                 if len(answer) == 0 else True
-#     }
-# ]
 
 hostlist_selected = prompt(hostlist_select)
 hostlist_undict = hostlist_selected["hostlist_options"]
@@ -196,17 +122,11 @@ logger.info("Outputting to selected host(s)...")
 logger.info(hostlist_complete)
 
 
-########################################
-##ADD/REMOVE ACTIONABLE HOSTLISTS HERE##
-########################################
 # initiate progress bar
 if args.silence:
         bar = ShadyBar('Processing', max=(len(hostlist_complete)))
 
 for host in hostlist_complete:
-
-#       if loader_visual == True:
-#               bar.next()
 
         junos1 = {
                 "device_type": "juniper_junos",
@@ -215,8 +135,6 @@ for host in hostlist_complete:
                 "password": password,
                 "global_delay_factor": 2,
         }
-
-#       filename = (save_dir + "/" + host + "_" + str(date) + ".txt")
 
         net_connect = netmiko.Netmiko(**junos1)
         output = net_connect.send_command(command)
