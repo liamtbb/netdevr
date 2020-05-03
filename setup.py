@@ -3,6 +3,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
+# set package dependencies for install
 requirements = ["keyring>=21", "progress>=1.5", "pyinquirer>=1", "pyinstaller>=3.6", "netmiko>=3.1"]
 
 setup(
