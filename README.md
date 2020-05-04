@@ -3,7 +3,7 @@ A simple network device manager for batch commands and backups.
 
 ---
 
-#### Install
+### Install
 ```
 netDevr requires Python3.5+ already installed.
 ```
