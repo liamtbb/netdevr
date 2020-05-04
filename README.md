@@ -35,7 +35,7 @@ optional arguments:
                         sets command      
   **-e, --edit**            sets edit mode, use at own risk     
   **-d DESTINATION_INLINE, --destination DESTINATION_INLINE**
-                        sets destination hostlist(s), separate multiple lists with ',' e.g. <list1>,<list2>  
+                        sets destination hostlist(s), separate multiple lists with ','      
   **-l, --list**            list all available destination hostlists      
   **-a AUTODETECT, --autodetect AUTODETECT**
                         autodetects device type of specified host     
