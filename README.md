@@ -11,7 +11,7 @@ netDevr requires Python3.5+ already installed.
 
 - Install pip3 dependencies in Powershell: `pip3 install progress pyinquirer pyinstaller keyring netmiko`   
 
-- Navigate to netDevr directory and execute with 'python netdevr'
+- Navigate to netDevr directory and execute with `python netdevr`
 
 ---
 #### Help [netdevr -h]
