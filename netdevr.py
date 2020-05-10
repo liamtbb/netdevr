@@ -215,6 +215,10 @@ else:
                 command = command_dict.get("command_options")
                 edit_mode = False
 
+                if "<input>" in command:
+                        sub_command = input("Complete input for command " + command +": ")
+                        command = command.replace('<input>', sub_command)
+
                 logger.info("Command has been set as: " + command)
         elif command == "edit":
                 edit_mode = True
@@ -251,20 +255,8 @@ if args.silence:
 
 for host in hostlist_complete:
 
-        # for key in hostlist_active:
-        #         if host in hostlist_active[key]:
-        #                 device_type = "juniper_junos"
-
-        if host == 'juniper':
-                device_type = "juniper_junos"
-                print("The device type has been set to: " + device_type)
-                continue
-        if host == 'cisco':
-                device_type = "cisco_ios"
-                print("The device type has been set to: " + device_type)
-                continue
-        if host == 'linux':
-                device_type = "linux"
+        if host.startswith('type_set:'):
+                device_type = host[9:]
                 print("The device type has been set to: " + device_type)
                 continue
 
