@@ -5,7 +5,7 @@ A simple network device manager for batch commands and backups.
 
 ### Install
 ```
-netDevr requires Python3.5+ already installed.
+netDevr requires Python3.5+
 ```
 - Download and extract netDevr package to local directory.
 
