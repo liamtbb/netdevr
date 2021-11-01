@@ -1,5 +1,5 @@
 # netdevr
-A simple network device manager for batch commands and backups.
+An expanded version of netbackup with improved functionality for batch commands and backups.
 
 ---
 
